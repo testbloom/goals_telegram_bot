@@ -1,44 +1,15 @@
-from telegram import Bot
-from telegram import Update
-from telegram.ext import Updater
-from telegram.ext import MessageHandler
-from telegram.ext import Filters
+import asyncio
 
+from aiogram import Bot, Dispatcher, executor
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from config import BOT_TOKEN
 
-TG_TOKEN = "892905402:AAGQoR7AEDmA7GK-GexbUDcvva_kC6Bcd8w"
+loop = asyncio.get_event_loop()
+bot = Bot(BOT_TOKEN, parse_mode="HTML")
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage, loop=loop)
 
-def message_handler(bot: Bot, update: Update):
-	user = update.effective_user
-	if user:
-		name = user.first_name
-	else:
-		name = 'Аноним'
+if __name__ == '__main__':
+    from handlers import *
 
-	text = update.effective_message.text
-	reply_text = f'Привет, {name}!\n\n {text}'
-
-	bot.send_message(
-		chat_id=update.effective_message.chat_id,
-		text=reply_text,
-	)
-
-
-def main():
-        print('Start')
-	bot = Bot(
-		token-TG_TOKN,
-	)
-	updater = Updater(
-		bot=bot,
-	)
-
-	hendler = MessageHandler(Filters.all, message_handler)
-	updater.dispatcher.add_hendler(hendler)
-
-	updater.start_polling()
-	updater.idle()
-        print('Finish')
-        
-	if __name__ == '__main__':
-		main()
-
+    executor.start_polling(dp, on_startup=send_to_admin)
